@@ -1,3 +1,4 @@
+import streamlit as st
 from utils.scrape_news import search_google_news
 
 st.header("📰 Auto-Scraped Headlines (Havana Syndrome)")
