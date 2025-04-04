@@ -1,27 +1,26 @@
-import requests
-from bs4 import BeautifulSoup
+import streamlit as st
+from utils.scrape_news import search_google_news
 
-def search_google_news(queries, max_results=10):
-    headers = {'User-Agent': 'Mozilla/5.0'}
-    articles = []
+st.title("📰 Auto-Scraped Headlines (Havana Syndrome & Related Terms)")
 
-    for query in queries:
-        search_url = f"https://news.google.com/search?q={query.replace(' ', '%20')}"
-        response = requests.get(search_url, headers=headers)
-        soup = BeautifulSoup(response.text, 'html.parser')
+keywords = [
+    "Havana Syndrome",
+    "Anomalous health incidents",
+    "Directed energy attacks",
+    "Embassy staff illnesses",
+    "Unexplained neurological symptoms",
+    "Diplomatic health incidents"
+]
 
-        for item in soup.find_all('a', href=True):
-            text = item.get_text().strip()
-            if text and "articles" in item["href"]:
-                link = "https://news.google.com" + item["href"][1:]
-                articles.append({
-                    "headline": text,
-                    "url": link,
-                    "snippet": "Preview from Google News"
-                })
-                if len(articles) >= max_results:
-                    break
-        if len(articles) >= max_results:
-            break
+try:
+    articles = search_google_news(keywords, max_results=20)
 
-    return articles
+    if articles:
+        for article in articles:
+            st.markdown(f"**[{article['headline']}]({article['url']})**")
+            st.caption(article['snippet'])
+    else:
+        st.info("No articles found. Try expanding keywords or checking RSS sources.")
+
+except Exception as e:
+    st.error(f"News scraping failed: {e}")
