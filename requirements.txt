@@ -4,3 +4,4 @@ pandas
 pydeck
 requests
 beautifulsoup4
+feedparser
