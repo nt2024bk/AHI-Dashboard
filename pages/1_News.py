@@ -1,15 +1,27 @@
+import requests
+from bs4 import BeautifulSoup
 
-import streamlit as st
-import pandas as pd
+def search_google_news(queries, max_results=10):
+    headers = {'User-Agent': 'Mozilla/5.0'}
+    articles = []
 
-st.title("📰 Havana Syndrome News Headlines")
+    for query in queries:
+        search_url = f"https://news.google.com/search?q={query.replace(' ', '%20')}"
+        response = requests.get(search_url, headers=headers)
+        soup = BeautifulSoup(response.text, 'html.parser')
 
-# Placeholder for scraped headlines
-news = [
-    {"date": "2025-04-01", "headline": "New symptoms linked to directed energy incidents", "source": "Global News"},
-    {"date": "2025-03-28", "headline": "Government briefings hint at foreign involvement", "source": "The Herald"},
-]
+        for item in soup.find_all('a', href=True):
+            text = item.get_text().strip()
+            if text and "articles" in item["href"]:
+                link = "https://news.google.com" + item["href"][1:]
+                articles.append({
+                    "headline": text,
+                    "url": link,
+                    "snippet": "Preview from Google News"
+                })
+                if len(articles) >= max_results:
+                    break
+        if len(articles) >= max_results:
+            break
 
-st.write("### Latest Headlines")
-for item in news:
-    st.markdown(f"**{item['date']}** - [{item['headline']}]({item['source']})")
+    return articles
