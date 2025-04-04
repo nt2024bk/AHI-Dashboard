@@ -1,11 +1,8 @@
+from utils.scrape_news import search_google_news
 
-import streamlit as st
+st.header("📰 Auto-Scraped Headlines (Havana Syndrome)")
+articles = search_google_news()
 
-st.set_page_config(page_title="Havana Syndrome Dashboard", layout="wide")
-
-st.title("Havana Syndrome Intelligence Dashboard")
-st.markdown("""
-Welcome to the centralized dashboard for tracking all things related to Havana Syndrome, 
-including news headlines, incident reports, government actions, expert resources, and more.
-""")
-st.markdown("Use the sidebar to navigate between sections.")
+for article in articles:
+    st.markdown(f"**[{article['headline']}]({article['url']})**")
+    st.caption(article['snippet'])
