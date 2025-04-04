@@ -5,3 +5,4 @@ pydeck
 requests
 beautifulsoup4
 feedparser
+spacy
