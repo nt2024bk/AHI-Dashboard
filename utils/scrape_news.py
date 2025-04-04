@@ -3,12 +3,35 @@ import spacy
 from datetime import datetime
 import re
 
-# Load spaCy NLP model (make sure to install it: python -m spacy download en_core_web_sm)
+# Load spaCy NLP model (install with: python -m spacy download en_core_web_sm)
 nlp = spacy.load("en_core_web_sm")
 
-def search_google_news(queries, max_results=20):
+# Expanded search term list
+keywords = [
+    "Havana Syndrome",
+    "Anomalous health incidents",
+    "Directed energy attacks",
+    "Microwave weapon injuries",
+    "Neurological attack embassy",
+    "Unexplained neurological symptoms",
+    "Embassy staff illness unexplained",
+    "Cognitive damage in diplomats",
+    "Brain injury foreign service",
+    "Psychotronic weapons",
+    "Microwave auditory effect",
+    "Symptoms from sonic weapons",
+    "Non-lethal weapons health effect",
+    "Foreign service trauma symptoms",
+    "Energy weapon directed at personnel",
+    "US diplomats mysterious illness",
+    "Cognitive impairment unexplained",
+    "White matter brain anomalies",
+    "Bizarre illness foreign officials"
+]
+
+def search_google_news(queries=keywords, max_results=20):
     """
-    Search Google News RSS for a list of keywords and return basic article info.
+    Searches Google News RSS for multiple keyword queries and returns article metadata.
     """
     base_url = "https://news.google.com/rss/search?q="
     articles = []
@@ -22,14 +45,16 @@ def search_google_news(queries, max_results=20):
                 "headline": entry.title,
                 "url": entry.link,
                 "snippet": entry.get("summary", "No snippet available"),
-                "date": entry.get("published", datetime.now().isoformat())
+                "date": entry.get("published", datetime.now().isoformat()),
+                "query": query
             })
 
     return articles
 
+
 def extract_doctors_from_articles(articles):
     """
-    Run spaCy NLP on each article's title + snippet to extract names like 'Dr. John Smith'.
+    Extracts names of doctors from article text using spaCy NLP (PERSON entities prefixed with Dr./Doctor).
     """
     doctors = []
 
