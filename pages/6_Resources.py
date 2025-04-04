@@ -15,7 +15,7 @@ if os.path.exists(csv_path) and os.path.getsize(csv_path) > 0:
         st.error(f"Error reading doctors.csv: {e}")
 
 if doctors.empty:
-    st.warning("No doctors mentioned in recent news articles.")
+    st.warning("")
 else:
     st.subheader("🧑‍⚕️ Doctor Directory")
     st.dataframe(doctors)
